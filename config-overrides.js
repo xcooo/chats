@@ -10,7 +10,7 @@ module.exports = override(
     javascriptEnabled: true,
     //修改默认主题样式
     modifyVars: {
-      "@brand-primary": "#1cae82",      // 正常
+      "@brand-primary": "#13CCBE",      // 正常
       "@brand-primary-tap":"#1DA57A",  // 按下
       "color-text-base": "#333",
       //other...
