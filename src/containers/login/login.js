@@ -8,20 +8,26 @@ import {
   List,
   InputItem,
   WhiteSpace,
-  Button
+  Button,
+  Toast
 } from 'antd-mobile'
+
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import { login } from '../../redux/actions'
+
 
 import Logo from '../../components/logo/logo'
 const ListItem = List.Item
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   state = {
     username: '', // 用户名
     password: '' // 密码
   }
   login = () => {
-    console.log(this.state);
-    
+    // console.log(this.state);
+    this.props.login(this.state)
   }
   // 处理输入数据的改变: 更新对应的状态
   handleChange = (name, val) => {
@@ -33,18 +39,24 @@ export default class Login extends React.Component {
     this.props.history.replace('/register')
   }
   render() {
+    const { msg, redirectTo } = this.props.user
+    // 如果redirectTo有值, 需要重定向到指定的路由
+    if (redirectTo) {
+      return <Redirect to={redirectTo} />
+    }
     return (
       <div>
         <NavBar>聊&nbsp;天&nbsp;宝</NavBar>
         <Logo />
         <WingBlank>
           <List>
+          {msg ? <div className="error-msg">{msg}</div> : null}
             <WhiteSpace />
-            <InputItem placeholder='请输入用户名' onChange={val => {this.handleChange('username', val)}}>用户名:</InputItem>
+            <InputItem placeholder='请输入用户名' onChange={val => { this.handleChange('username', val) }}>用户名:</InputItem>
             <WhiteSpace />
-            <InputItem placeholder='请输入密码' type="password" onChange={val => {this.handleChange('password', val)}}>密&nbsp;&nbsp;&nbsp;码:</InputItem>
+            <InputItem placeholder='请输入密码' type="password" onChange={val => { this.handleChange('password', val) }}>密&nbsp;&nbsp;&nbsp;码:</InputItem>
             <WhiteSpace />
-          
+
             <Button type="primary" onClick={this.login}>登录</Button>
             <WhiteSpace />
             <Button onClick={this.toRegister}>还没有账户</Button>
@@ -54,3 +66,8 @@ export default class Login extends React.Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  { login }
+)(Login)
