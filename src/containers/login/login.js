@@ -8,17 +8,14 @@ import {
   List,
   InputItem,
   WhiteSpace,
-  Button,
-  Toast
+  Button
 } from 'antd-mobile'
 
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { login } from '../../redux/actions'
 
-
 import Logo from '../../components/logo/logo'
-const ListItem = List.Item
 
 class Login extends React.Component {
   state = {
