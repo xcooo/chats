@@ -3,8 +3,8 @@
  * 异步action
  * 同步action
  */
-import { reqRegister, reqLogin, reqUpdateUser } from '../api/index'
-import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER } from './action-types'
+import { reqRegister, reqLogin, reqUpdateUser, reqUser, reqUserlist } from '../api/index'
+import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, RECEIVE_USER_LIST } from './action-types'
 
 // 授权成功的同步action
 const authSuccess = (user) => ({ type: AUTH_SUCCESS, data: user })
@@ -13,7 +13,9 @@ const errorMsg = (msg) => ({ type: ERROR_MSG, data: msg })
 // 接收用户的同步action
 const receiveUser = (user) => ({ type: RECEIVE_USER, data: user })
 // 重置用户的同步action
-const resetUser = (msg) => ({ type: RESET_USER, data: msg })
+export const resetUser = (msg) => ({ type: RESET_USER, data: msg })
+// 接收用户列表的同步action
+const receiveUserList = (userList) => ({ type: RECEIVE_USER_LIST, data: userList })
 
 // 注册异步action
 export const register = (user) => {
@@ -73,6 +75,30 @@ export const updateUser = (user) => {
     } else {
       // 更新失败 msg
       dispatch(resetUser(result.msg))
+    }
+  }
+}
+
+// 获取用户异步action
+export const getUser = () => {
+  return async dispatch => {
+    const response = await reqUser()
+    const result = response.data
+    if (result.code === 0) {  //成功
+      dispatch(receiveUser(result.data))
+    } else {  // 失败
+      dispatch(resetUser(result.msg))
+    }
+  }
+}
+
+// 获取用户列表的异步aciton
+export const  getUserList = (type) => {
+  return async dispatch => {
+    const response = await reqUserlist(type)
+    const result = response.data
+    if(result.code === 0) {
+      dispatch(receiveUserList(result.data))
     }
   }
 }

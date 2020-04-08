@@ -19,7 +19,7 @@ export default class HeaderSelector extends React.Component {
     for (let i = 0; i < 20; i++) {
       this.headerList.push({
         text: '头像' + (i + 1),
-        icon: require(`./images/头像${i + 1}.png`)  // 不能使用 import
+        icon: require(`../../assets/images/头像${i + 1}.png`)  // 不能使用 import
       })
     }
   }
