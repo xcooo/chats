@@ -1,13 +1,33 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { NavBar, List, InputItem } from 'antd-mobile'
+import { NavBar, List, InputItem, Grid } from 'antd-mobile'
 import { sendMsg } from '../../redux/actions'
 const Item = List.Item
 
 class Chat extends React.Component {
   state = {
-    content: ''
+    content: '',
+    isShow: false // 是否显示表情列表
   }
+  // 在第一次render() 之前回调
+  componentWillMount() {
+    // 初始化表情列表数据
+    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇',
+      '🤪', '😝', '🤑', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇']
+    this.emojis = emojis.map(emoji => ({ text: emoji }))
+  }
+
+  toggleShow = () => {
+    const isShow = !this.state.isShow
+    this.setState({ isShow })
+    if (isShow) {
+      // 异步手动派发resize事件, 解决表情列表显示的bug
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'))
+      }, 0)
+    }
+  }
+
   handleSend = () => {
     // 收集数据
     const from = this.props.user._id
@@ -19,7 +39,8 @@ class Chat extends React.Component {
     }
     // 清除输入数据
     this.setState({
-      content: ''
+      content: '',
+      isShow: false
     })
   }
   render() {
@@ -29,7 +50,7 @@ class Chat extends React.Component {
     // 计算当前聊天的chatid
     const meId = user._id
     // 如果还没有
-    if(!users[meId]) {
+    if (!users[meId]) {
       return null
     }
     const targetId = this.props.match.params.userid
@@ -74,10 +95,25 @@ class Chat extends React.Component {
             placeholder="请输入"
             value={this.state.content}
             onChange={val => this.setState({ content: val })}
+            onFocus={() => this.setState({ isShow: false })}
             extra={
-              <span onClick={this.handleSend}>发送</span>
+              <div>
+                <span onClick={this.toggleShow} style={{ marginRight: 5 }}>🙂</span>
+                <span onClick={this.handleSend}>发送</span>
+              </div>
             }
           />
+          {this.state.isShow ? (
+            <Grid
+              data={this.emojis}
+              columnNum={8}
+              carouselMaxRow={4}
+              isCarousel={true}
+              onClick={(item) => {
+                // 将表情保存在content中
+                this.setState({ content: this.state.content + item.text })
+              }}
+            />) : null}
         </div>
       </div>
     )
