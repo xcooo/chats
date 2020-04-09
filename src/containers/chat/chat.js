@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { NavBar, List, InputItem, Grid } from 'antd-mobile'
+import { NavBar, List, InputItem, Grid, Icon } from 'antd-mobile'
 import { sendMsg } from '../../redux/actions'
 const Item = List.Item
 
@@ -15,6 +15,16 @@ class Chat extends React.Component {
     const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇',
       '🤪', '😝', '🤑', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇']
     this.emojis = emojis.map(emoji => ({ text: emoji }))
+  }
+
+  componentDidMount() {
+    // 初始化显示列表
+    window.scrollTo(0, document.body.scrollHeight)
+  }
+
+  componentDidUpdate() {
+    // 更新显示列表
+    window.scrollTo(0, document.body.scrollHeight)
   }
 
   toggleShow = () => {
@@ -64,8 +74,13 @@ class Chat extends React.Component {
 
     return (
       <div id='chat-page'>
-        <NavBar>aa</NavBar>
-        <List>
+        <NavBar
+          icon={<Icon type="left" />}
+          onLeftClick={() => this.props.history.goBack()}
+          className="sticky-header">
+          {users[targetId].username}
+        </NavBar>
+        <List style={{ marginTop: 50, marginBottom: 50 }}>
           {
             msgs.map(msg => {
               if (targetId === msg.from) {  // 对方发给我的
