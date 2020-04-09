@@ -15,9 +15,11 @@ import Personal from '../personal/personal'
 import NotFound from '../../components/not-found/not-found'
 import { NavBar } from 'antd-mobile'
 import NavFooter from '../../components/nav-footer/nav-footer'
+import Chat from '../chat/chat'
 
 import { getRedirectTo } from '../../utils'
 import { getUser } from '../../redux/actions'
+import chat from '../chat/chat'
 
 class Main extends React.Component {
   // 给组件对象添加属性
@@ -108,6 +110,7 @@ class Main extends React.Component {
           }
           <Route path="/girlInfo" component={GirlInfo} />
           <Route path="/boyInfo" component={BoyInfo} />
+          <Route path="/chat/:userid" component={Chat} />
           <Route component={NotFound} />
         </Switch>
         {currentNav ? <NavFooter navList={navList} />: null}

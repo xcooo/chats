@@ -2,7 +2,7 @@
  * 包含n个 reducer函数: 根据老的state和指定的action返回一个新的state
  */
 import { combineReducers } from 'redux'
-import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, RECEIVE_USER_LIST } from './action-types'
+import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, RECEIVE_USER_LIST, RECEIVE_MSG_LIST, RECEIVE_MSG } from './action-types'
 import { getRedirectTo } from '../utils'
 
 const initUser = {
@@ -23,7 +23,7 @@ function user(state = initUser, action) {
     case RECEIVE_USER:   // data是user
       return action.data
     case RESET_USER:   // data是msg
-      return {...initUser, msg: action.data}
+      return { ...initUser, msg: action.data }
     default:
       return state
   }
@@ -39,8 +39,35 @@ function userList(state = initUserList, action) {
   }
 }
 
+const initChat = {
+  users: {},    // 所有用户信息的对象  属性名: userid, 属性值是: {username, header}
+  chatMsgs: [],  // 当前用户所有相关msg的数组
+  unReadCount: 0 // 总的未读数量
+}
+// 产生chatlist的reducer
+function chat(state = initChat, action) {
+  switch (action.type) {
+    case RECEIVE_MSG_LIST:   // {users, chatMsgs}
+      const { users, chatMsgs } = action.data
+      return {
+        users,
+        chatMsgs,
+        unReadCount: 0
+      }
+    case RECEIVE_MSG:
+      const chatMsg = action.data
+      return {
+        users: state.users,
+        chatMsgs: [...state.chatMsgs, chatMsg],
+        unReadCount: 0
+      }
+    default:
+      return state
+  }
+}
 export default combineReducers({
   user,
-  userList
+  userList,
+  chat
 })
-// 向外暴露的状态的结构: {user: {}, userList:[]}
+// 向外暴露的状态的结构: {user: {}, userList:[], chat:{}}
