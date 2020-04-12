@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { NavBar, List, InputItem, Grid, Icon } from 'antd-mobile'
-import { sendMsg } from '../../redux/actions'
+import { sendMsg, rendMsg } from '../../redux/actions'
 const Item = List.Item
 
 class Chat extends React.Component {
@@ -20,11 +20,20 @@ class Chat extends React.Component {
   componentDidMount() {
     // 初始化显示列表
     window.scrollTo(0, document.body.scrollHeight)
+
   }
 
   componentDidUpdate() {
     // 更新显示列表
     window.scrollTo(0, document.body.scrollHeight)
+  }
+
+  componentWillUnmount() {  // 在退出之前
+    // 发请求更新消息的未读状态
+    const from = this.props.match.params.userid
+    const to = this.props.user._id
+    // 这里可以再完善, 有未读消息, 再发请求
+    this.props.rendMsg(from, to)
   }
 
   toggleShow = () => {
@@ -81,29 +90,30 @@ class Chat extends React.Component {
           {users[targetId].username}
         </NavBar>
         <List style={{ marginTop: 50, marginBottom: 50 }}>
-          {
-            msgs.map(msg => {
-              if (targetId === msg.from) {  // 对方发给我的
-                return (
-                  <Item
-                    key={msg._id}
-                    thumb={targetIcon}
-                  >
-                    {msg.content}
-                  </Item>
-                )
-              } else {  // 我发给对方的
-                return (
-                  <Item
-                    key={msg._id}
-                    className='chat-me'
-                    extra='我'>
-                    {msg.content}
-                  </Item>
-                )
-              }
-            })
-          }
+            {
+              msgs.map(msg => {
+                if (targetId === msg.from) {  // 对方发给我的
+                  return (
+                    <Item
+                      key={msg._id}
+                      thumb={targetIcon}
+                      className="chatItem"
+                    >
+                      {msg.content}
+                    </Item>
+                  )
+                } else {  // 我发给对方的
+                  return (
+                    <Item
+                      key={msg._id}
+                      className='chat-me'
+                      extra='我'>
+                      {msg.content}
+                    </Item>
+                  )
+                }
+              })
+            }
         </List>
         <div className='am-tab-bar'>
           <InputItem
@@ -137,5 +147,5 @@ class Chat extends React.Component {
 
 export default connect(
   state => ({ user: state.user, chat: state.chat }),
-  { sendMsg }
+  { sendMsg, rendMsg }
 )(Chat)

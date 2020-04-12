@@ -72,7 +72,7 @@ class Main extends React.Component {
       return <Redirect to='/login' />
     }
     // 如果有, 读取redux中的user状态
-    const { user } = this.props
+    const { user, unReadCount } = this.props
     // 如果redux中的user没有_id, 返回null(不做任何显示)   不能返回到login界面, 否则实现不了自动登录功能
     // debugger
     if (!user._id) {
@@ -113,13 +113,13 @@ class Main extends React.Component {
           <Route path="/chat/:userid" component={Chat} />
           <Route component={NotFound} />
         </Switch>
-        {currentNav ? <NavFooter navList={navList} />: null}
+        {currentNav ? <NavFooter navList={navList} unReadCount={unReadCount} />: null}
       </div>
     )
   }
 }
 export default connect(
-  state => ({ user: state.user }),
+  state => ({ user: state.user, unReadCount: state.chat.unReadCount }),
   { getUser }
 )(Main)
 

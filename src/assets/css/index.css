@@ -25,3 +25,10 @@
   padding-right: 15px;
   text-align: right;
 }
+#chat-page .am-list-item .am-list-line .am-list-content {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical!important;
+  -webkit-line-clamp: 100!important;
+  overflow: hidden!important;
+  white-space: pre-wrap;
+}
